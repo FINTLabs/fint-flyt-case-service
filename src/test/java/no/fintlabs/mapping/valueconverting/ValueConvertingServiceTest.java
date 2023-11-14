@@ -1,11 +1,16 @@
-package no.fintlabs.mapping;
+package no.fintlabs.mapping.valueconverting;
 
 import no.fintlabs.exception.ValueConvertingKeyNotFoundException;
 import no.fintlabs.exception.ValueConvertingNotFoundException;
 import no.fintlabs.kafka.configuration.ValueConvertingRequestProducerService;
+import no.fintlabs.mapping.InstanceReferenceService;
+import no.fintlabs.mapping.valueconverting.ValueConvertingReferenceService;
+import no.fintlabs.mapping.valueconverting.ValueConvertingService;
+import no.fintlabs.mapping.valueconverting.converters.TextConvertingService;
 import no.fintlabs.model.instance.InstanceObject;
 import no.fintlabs.model.valueconverting.ValueConverting;
 import org.junit.jupiter.api.Test;
+
 import static org.mockito.Mockito.*;
 
 import java.util.HashMap;
@@ -17,10 +22,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ValueConvertingServiceTest {
 
-    private final ValueConvertingRequestProducerService valueConvertingRequestProducerService = mock(ValueConvertingRequestProducerService.class);
-    private final InstanceReferenceService instanceReferenceService = mock(InstanceReferenceService.class);
-    private final ValueConvertingReferenceService valueConvertingReferenceService = mock(ValueConvertingReferenceService.class);
-    private final ValueConvertingService service = new ValueConvertingService(valueConvertingRequestProducerService, instanceReferenceService, valueConvertingReferenceService);
+    private final ValueConvertingRequestProducerService valueConvertingRequestProducerService
+            = mock(ValueConvertingRequestProducerService.class);
+    private final InstanceReferenceService instanceReferenceService
+            = mock(InstanceReferenceService.class);
+    private final ValueConvertingReferenceService valueConvertingReferenceService
+            = mock(ValueConvertingReferenceService.class);
+    private final TextConvertingService textConvertingService
+            = mock(TextConvertingService.class);
+    private final ValueConvertingService service = new ValueConvertingService(
+            valueConvertingRequestProducerService,
+            instanceReferenceService,
+            valueConvertingReferenceService,
+            textConvertingService
+    );
+
 
     @Test
     public void testConvertValue_ValidInput() {
@@ -42,6 +58,23 @@ public class ValueConvertingServiceTest {
         String result = service.convertValue(mappingString, instanceValuePerKey, selectedCollectionObjectsPerKey);
 
         assertEquals("converted value", result);
+    }
+
+    @Test
+    public void testConvertValue_ValidInput_ProgrammaticTextConverting() {
+        String mappingString = "mapping string";
+        Map<String, String> instanceValuePerKey = new HashMap<>();
+        InstanceObject[] selectedCollectionObjectsPerKey = new InstanceObject[0];
+        String instanceValue = "instance value";
+
+        when(instanceReferenceService.getFirstInstanceValue(mappingString, instanceValuePerKey, selectedCollectionObjectsPerKey)).thenReturn(instanceValue);
+        when(valueConvertingReferenceService.getFirstValueConverterId(mappingString)).thenReturn(-1L);
+        when(textConvertingService.toUpperCase("instance value")).thenReturn("INSTANCE VALUE");
+
+        String result = service.convertValue(mappingString, instanceValuePerKey, selectedCollectionObjectsPerKey);
+
+        assertEquals("INSTANCE VALUE", result);
+        verify(textConvertingService, times(1)).toUpperCase("instance value");
     }
 
     @Test

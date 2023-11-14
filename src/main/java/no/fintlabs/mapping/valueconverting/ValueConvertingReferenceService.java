@@ -1,4 +1,4 @@
-package no.fintlabs.mapping;
+package no.fintlabs.mapping.valueconverting;
 
 import org.springframework.stereotype.Service;
 

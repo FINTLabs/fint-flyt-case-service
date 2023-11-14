@@ -1,6 +1,9 @@
 package no.fintlabs.mapping;
 
 import no.fintlabs.kafka.configuration.ValueConvertingRequestProducerService;
+import no.fintlabs.mapping.valueconverting.ValueConvertingReferenceService;
+import no.fintlabs.mapping.valueconverting.ValueConvertingService;
+import no.fintlabs.mapping.valueconverting.converters.TextConvertingService;
 import no.fintlabs.model.configuration.CollectionMapping;
 import no.fintlabs.model.configuration.FromCollectionMapping;
 import no.fintlabs.model.configuration.ObjectMapping;
@@ -34,7 +37,8 @@ class InstanceMappingServiceIntegrationTest {
                         new ValueConvertingService(
                                 valueConvertingRequestProducerService,
                                 instanceReferenceService,
-                                new ValueConvertingReferenceService()
+                                new ValueConvertingReferenceService(),
+                                new TextConvertingService()
                         )
                 )
         );

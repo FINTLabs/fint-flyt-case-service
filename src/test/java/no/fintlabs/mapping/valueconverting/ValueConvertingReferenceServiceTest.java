@@ -1,5 +1,6 @@
-package no.fintlabs.mapping;
+package no.fintlabs.mapping.valueconverting;
 
+import no.fintlabs.mapping.valueconverting.ValueConvertingReferenceService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

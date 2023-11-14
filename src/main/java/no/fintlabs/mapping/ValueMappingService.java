@@ -1,6 +1,7 @@
 package no.fintlabs.mapping;
 
 
+import no.fintlabs.mapping.valueconverting.ValueConvertingService;
 import no.fintlabs.model.configuration.ValueMapping;
 import no.fintlabs.model.instance.InstanceObject;
 import org.springframework.stereotype.Service;
